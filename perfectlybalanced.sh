@@ -4,12 +4,15 @@
 # By Cuaritas 2021
 # MIT License
 
-# Your channels to keep perfectly balanced, get them with `rebalance.py -l -c`
-# See https://github.com/C-Otto/rebalance-lnd for more info
+# Your settings vars:
+
 REBALANCE_LND_FILEPATH=/home/umbrel/Downloads/rebalance-lnd/rebalance.py
 LND_DIR=/mnt/umbrel/Umbrel/lnd/
 MAX_FEE=100
-TOLERANCE=0.999 # I do not recommend to put 1 here, it may get crazy XD
+TOLERANCE=0.999
+
+# Your channels to keep perfectly balanced, get them with `rebalance.py -l -c`
+# See https://github.com/C-Otto/rebalance-lnd for more info
 
 declare -a channels=(
   766511337228992513 # SpaintoLATAM
@@ -61,7 +64,7 @@ reb () {
 
 UNBALANCED=()
 list () {
-  echo -e "\nChecking these channels, red are outside tolerence $TOLERANCE and green are ok:\n"
+  echo -e "\nChecking these channels, red are outside tolerance $TOLERANCE and green are ok:\n"
 
   inbound=0
   outbound=0
@@ -123,7 +126,6 @@ list)
 rebalance)
   list
   rebalance
-  list
   ;;
 *)
   echo "Try --help"
