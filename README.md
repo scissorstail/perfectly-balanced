@@ -3,6 +3,7 @@
 ![image](https://user-images.githubusercontent.com/88283485/130841235-3e8901c5-3477-4107-b15f-f284a06a9665.png)
 
 Script to make your LND node pefectly balanced as all things should be.
+Inspired by Igniter https://github.com/RooSoft/igniter
 
 ## Requirements:
 
@@ -49,8 +50,17 @@ LIQUIDITY_DUMP=761128128258703361 # LNBIG.com [lnd-13]
 
 ## Contribute
 
-- Also feel free to collaborate with code or donate a few Satoshi using your LND Lightning node ⚡ 😄
+- Feel free to collaborate with code or donate a few Satoshi using your LND Lightning node ⚡ 😄
 
 ```
 ./lncli sendpayment --keysend 03e7299ced214b19b87ed87979462d9aee3ec07a42fe6e2211854bfa4cb32b0bb8 10 # sats
 ```
+
+- Also you can connect to my node if you want 😉
+
+```
+03e7299ced214b19b87ed87979462d9aee3ec07a42fe6e2211854bfa4cb32b0bb8@5vsl77nxpmqh5sh3ksetqhhy7dhozccz3bkddrx75bzvvrklbzkxa5qd.onion:9735
+```
+
+![image](https://user-images.githubusercontent.com/88283485/130843809-41c462ba-0a0b-4631-a62d-5414affc9497.png)
+
