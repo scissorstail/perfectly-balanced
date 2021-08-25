@@ -70,7 +70,7 @@ list () {
     temp=`reb -l -c | grep $c`
     inbound=`echo $temp | awk '{ printf $3 }' | sed 's/,//g'`
     outbound=`echo $temp | awk '{ printf $5 }' | sed 's/,//g'`
-    if [[ `bc -l <<< "$inbound/$outbound > $TOLERANCE && $outbound/$inbound > $TOLERANCE"` -eq 1 ]]; then
+    if [[ `bc -l <<< "$inbound/$outbound >= $TOLERANCE && $outbound/$inbound >= $TOLERANCE"` -eq 1 ]]; then
      export GREP_COLORS='ms=01;32'
     else
      export GREP_COLORS='ms=01;31'
