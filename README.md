@@ -15,7 +15,7 @@ Inspired by [Igniter](https://github.com/RooSoft/igniter), [Rebalance-LND](https
 Edit these values according to your node:
 
 ```
-Your settings vars:
+# Your settings vars:
 
 REBALANCE_LND_FILEPATH=/home/umbrel/Downloads/rebalance-lnd/rebalance.py
 LND_DIR=/mnt/umbrel/Umbrel/lnd/
