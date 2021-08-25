@@ -3,7 +3,7 @@
 ![image](https://user-images.githubusercontent.com/88283485/130841235-3e8901c5-3477-4107-b15f-f284a06a9665.png)
 
 Script to make your LND node pefectly balanced as all things should be.
-Inspired by Igniter https://github.com/RooSoft/igniter
+Inspired by [Igniter](https://github.com/RooSoft/igniter), [Rebalance-LND](https://github.com/C-Otto/rebalance-lnd) and [Balance Of Satoshi](https://github.com/alexbosworth/balanceofsatoshis)
 
 ## Requirements:
 
