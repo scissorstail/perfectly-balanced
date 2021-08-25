@@ -46,13 +46,13 @@ LIQUIDITY_DUMP=761128128258703361 # LNBIG.com [lnd-13]
 
 ## Example
 
-Unbalanced channels being balanced
+Unbalanced channels being rebalanced
 
-![image](https://user-images.githubusercontent.com/88283485/130877151-9c9cda85-78e4-47ed-b632-78be2557301d.png)
+![image](https://user-images.githubusercontent.com/88283485/130877841-bd332498-2018-42b3-824d-a16e8a100e39.png)
 
 List all channels perfectly balanced within tolerance:
 
-![image](https://user-images.githubusercontent.com/88283485/130877548-b7309442-b0d9-45b0-849c-63a55adf8c9a.png)
+![image](https://user-images.githubusercontent.com/88283485/130878142-7b9a606b-099c-4d52-bee7-05177dbd7d01.png)
 
 ## Contribute
 
