@@ -105,7 +105,7 @@ rebalance () {
     echo $amount | grep -q "-"
     if [[ $? -eq 0 ]]; then
       reb -f $u2 -t $LIQUIDITY_DUMP --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
-    else
+    elif [[ $amount -ne "0" ]]; then
       reb -f $LIQUIDITY_PUMP -t $u2 --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
     fi
   done
