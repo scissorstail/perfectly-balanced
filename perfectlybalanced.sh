@@ -111,7 +111,7 @@ rebalance () {
   done
 }
 
-VERSION="0.0.3"
+VERSION="0.0.4"
 
 case "$1" in
 --version)
