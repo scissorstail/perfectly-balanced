@@ -9,7 +9,7 @@
 REBALANCE_LND_FILEPATH=/home/umbrel/Downloads/rebalance-lnd/rebalance.py
 LND_DIR=/mnt/umbrel/Umbrel/lnd/
 MAX_FEE=100
-TOLERANCE=0.999
+TOLERANCE=0.98
 
 # Your channels to keep perfectly balanced, get them with `rebalance.py -l -c`
 # See https://github.com/C-Otto/rebalance-lnd for more info
@@ -111,7 +111,7 @@ rebalance () {
   done
 }
 
-VERSION=0.0.2
+VERSION="0.0.3"
 
 case "$1" in
 --version)
