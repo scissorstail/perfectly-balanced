@@ -39,14 +39,14 @@ Optional:
                 (Default: 50) Changes max fees useful only if passed before 'list' or 'rebalance'
 
         -t=TOLERANCE, --tolerance=TOLERANCE
-                (Default: 0.98) Changes tolerance useful only if passed before 'rebalance'
+                (Default: 0.95) Changes tolerance useful only if passed before 'rebalance'
 
 list:
         Shows a list of all channels in compacted mode using 'rebalance.py -c -l'
         for example to: './perfectlybalanced.sh --tolerance=0.99 list'
 
 rebalance:
-        Tries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.98
+        Tries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.95
         for example to: './perfectlybalanced.sh --max-fee=10 --tolerance=0.95 rebalance'
 ```
 
@@ -60,7 +60,7 @@ or
 
 `./perfectlybalanced.sh -t=0.92 list`
 
-Default list within tolerance 0.98:
+Default list within tolerance 0.95:
 
 `./perfectlybalanced.sh list`
 
@@ -73,7 +73,7 @@ or
 `./perfectlybalanced.sh -m=10 -t=0.97 rebalance`
 
 
-Default max fee 50 sats and tolerance 0.98:
+Default max fee 50 sats and tolerance 0.95:
 
 `./perfectlybalanced.sh rebalance`
 
