@@ -107,7 +107,7 @@ IDS=(`channels | awk '{ printf "%s\n", $1 }'`)
 UNBALANCED=()
 
 headers() {
-  echo -e "Channel ID         | Oubound Cap | Inbound Cap | Channel Alias"
+  echo -e "${P}Channel ID         ${W}| ${P}Oubound Cap${W} | ${P}Inbound Cap${W} | ${P}Channel Alias${W}"
 }
 
 list () {
@@ -158,7 +158,7 @@ rebalance () {
       reb -t $v --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
     fi
   done
-  echo -e "\nRebalance completed, please use '$FILENAME list' to see your perfectly rebalanced list :)\n"
+  echo -e "\nRebalance completed!\nPlease use '$FILENAME list' to see your perfectly rebalanced list :)\n"
 }
 
 
@@ -194,10 +194,11 @@ for i in "$@"; do
     ;;
   -h|--help)
     echo -e "Usage: $FILENAME {-v|-h|-m=VALUE|-t=VALUE|list|rebalance}\n"
+    echo -e "Optional:"
     echo -e "\t-v, --version\n\t\tShows the version for this script\n"
     echo -e "\t-h, --help\n\t\tShows this help\n"
-    echo -e "\t-m=MAX_FEE, --max-fee=MAX_FEE\n\t\tChanges max fees useful only if passed before 'list' or 'rebalance'"
-    echo -e "\t-t=TOLERANCE, --tolerance=TOLERANCE\n\t\tChanges tolerance useful only if passed before 'rebalance',"
+    echo -e "\t-m=MAX_FEE, --max-fee=MAX_FEE\n\t\t(Default: 100) Changes max fees useful only if passed before 'list' or 'rebalance'\n"
+    echo -e "\t-t=TOLERANCE, --tolerance=TOLERANCE\n\t\t(Default: 0.98) Changes tolerance useful only if passed before 'rebalance'\n"
     echo -e "list:\n\tShows a list of all channels in compacted mode using 'rebalance.py -c -l'"
     echo -e "\tfor example to: '$FILENAME --tolerance=0.99 list'\n"
     echo -e "rebalance:\n\tTries to rebalance unbalanced channels with default max fee of 100 and tolerance 0.98"
