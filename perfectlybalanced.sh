@@ -13,7 +13,7 @@ FILENAME=$0
 
 MAX_FEE=50 # Sats
 
-TOLERANCE=0.98 # 98%
+TOLERANCE=0.95 # 95%
 
 LND_DIR=$HOME/.lnd/
 
@@ -200,10 +200,10 @@ for i in "$@"; do
     echo -e "\t-i=CHANNEL_ID, --ignore=CHANNEL_ID\n\t\tIgnores a specific channel id useful only if passed before 'list' or 'rebalance'"
     echo -e "\t\tIt can be used many times and should match a number of 18 digits\n"
     echo -e "\t-m=MAX_FEE, --max-fee=MAX_FEE\n\t\t(Default: 50) Changes max fees useful only if passed before 'list' or 'rebalance'\n"
-    echo -e "\t-t=TOLERANCE, --tolerance=TOLERANCE\n\t\t(Default: 0.98) Changes tolerance useful only if passed before 'rebalance'\n"
+    echo -e "\t-t=TOLERANCE, --tolerance=TOLERANCE\n\t\t(Default: 0.95) Changes tolerance useful only if passed before 'rebalance'\n"
     echo -e "list:\n\tShows a list of all channels in compacted mode using 'rebalance.py -c -l'"
     echo -e "\tfor example to: '$FILENAME --tolerance=0.99 list'\n"
-    echo -e "rebalance:\n\tTries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.98"
+    echo -e "rebalance:\n\tTries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.95"
     echo -e "\tfor example to: '$FILENAME --max-fee=10 --tolerance=0.95 rebalance'\n"
     exit
     ;;
