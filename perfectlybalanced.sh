@@ -4,7 +4,7 @@
 # By Cuaritas 2021
 # MIT License
 
-# This script tries to perfectly balanced your channels by using `rebalance.py`
+# This script tries to get your channels perfectly balanced by using `rebalance.py`
 # See https://github.com/C-Otto/rebalance-lnd for more info
 
 VERSION="0.0.6"
