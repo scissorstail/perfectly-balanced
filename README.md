@@ -7,66 +7,75 @@ Inspired by [Igniter](https://github.com/RooSoft/igniter), [Rebalance-LND](https
 
 ## Requirements:
 
-- rebalance-lnd: https://github.com/C-Otto/rebalance-lnd (If you can run it we are good)
-- bc: https://www.gnu.org/software/bc/manual/html_mono/bc.html (Install your distro package)
+Almost all included by default in most linux distros:
+
+- `bash`
+- `python3`
+- `bc`
+- `wget`
+- `unzip`
+
+Make sure your LND path is located or linked to `$HOME/.lnd`
 
 ## Usage
 
-Edit these values according to your node:
+Not need to edit anything, just run it! 🚀
 
 ```
-# Your settings vars:
+Usage: ./perfectlybalanced.sh {-v|-h|-m=VALUE|-t=VALUE|list|rebalance}
 
-REBALANCE_LND_FILEPATH=/home/umbrel/Downloads/rebalance-lnd/rebalance.py
-LND_DIR=/mnt/umbrel/Umbrel/lnd/
-MAX_FEE=100
-TOLERANCE=0.999 # I do not recommend to put 1 here, it may get crazy XD
+Optional:
+        -v, --version
+                Shows the version for this script
 
-# Your channels to keep perfectly balanced, get them with `rebalance.py -l -c`
-# See https://github.com/C-Otto/rebalance-lnd for more info
+        -h, --help
+                Shows this help
 
-declare -a channels=(
-  766511337228992513 # SpaintoLATAM
-  766880773108203521 # renoblitz
-  766283738386399232 # 02a446876eafbbdaa96e
-  765011603400949760 # Gondolin
-  765016001414299649 # rbvdr21
-  766262847645417473 # 031b0b9df8e34e53de02
-  766874176095649792 # LibertyBull
-  766898365405003777 # Plaidfunds
-  761111635631734784 # 02c603d30ea3711144d4
-  766534426924810241 # Cuerna
-)
+        -m=MAX_FEE, --max-fee=MAX_FEE
+                (Default: 100) Changes max fees useful only if passed before 'list' or 'rebalance'
+        -t=TOLERANCE, --tolerance=TOLERANCE
+                (Default: 0.98) Changes tolerance useful only if passed before 'rebalance'
 
-# Liquidity channels also included in `reb -l -c` but you use these channels to pump and dump sats
+list:
+        Shows a list of all channels in compacted mode using 'rebalance.py -c -l'
+        for example to: './perfectlybalanced.sh --tolerance=0.99 list'
 
-LIQUIDITY_PUMP=766237558887612417 # LNBIG.com [lnd-03]
-LIQUIDITY_DUMP=761128128258703361 # LNBIG.com [lnd-13]
+rebalance:
+        Tries to rebalance unbalanced channels with default max fee of 100 and tolerance 0.98
+        for example to: './perfectlybalanced.sh --max-fee=10 --tolerance=0.95 rebalance'
 ```
 
-## Example
+## Examples
 
-Unbalanced channels being rebalanced
+List all channels within default tolerance 0.98:
 
-![image](https://user-images.githubusercontent.com/88283485/130878680-96caef87-1008-424c-a83b-77e1fcf260bd.png)
+`./perfectlybalanced.sh list`
 
-List all channels perfectly balanced within tolerance:
+List all channels within tolerance 0.92:
 
-![image](https://user-images.githubusercontent.com/88283485/130878601-6b33da24-69f7-40f6-aa50-0c2badc00089.png)
+`./perfectlybalanced.sh --tolerance=0.92 list`
+
+or
+
+`./perfectlybalanced.sh -t=0.92 list`
+
+Unbalanced channels being rebalanced max fee 10 sats and tolerance 0.97:
+
+`./perfectlybalanced.sh --max-fee=10 --tolerance=0.97 rebalance`
+
+or
+
+`./perfectlybalanced.sh -m=10 -t=0.97 rebalance`
+
+
+Unbalanced channels being rebalanced with default max fee 100 sats and tolerance 0.98:
+
+`./perfectlybalanced.sh rebalance`
+
+![image](https://user-images.githubusercontent.com/88283485/131094871-fa82657a-0f80-419c-aee1-838dea6dbcee.png)
 
 ## Contribute
 
-- Feel free to collaborate with code or donate a few Satoshi using your LND Lightning node ⚡ 😄
+Feel free to collaborate with code or donate a few Satoshi using your LND Lightning node ⚡ 😄
 
-```
-./lncli sendpayment --keysend 03e7299ced214b19b87ed87979462d9aee3ec07a42fe6e2211854bfa4cb32b0bb8 10 # sats
-```
-
-- Also you can connect to my node if you want 😉
-
-```
-03e7299ced214b19b87ed87979462d9aee3ec07a42fe6e2211854bfa4cb32b0bb8@5vsl77nxpmqh5sh3ksetqhhy7dhozccz3bkddrx75bzvvrklbzkxa5qd.onion:9735
-```
-
-![image](https://user-images.githubusercontent.com/88283485/130843809-41c462ba-0a0b-4631-a62d-5414affc9497.png)
-
+`lncli sendpayment --keysend 03e7299ced214b19b87ed87979462d9aee3ec07a42fe6e2211854bfa4cb32b0bb8 100 # sats`
