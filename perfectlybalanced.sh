@@ -152,10 +152,9 @@ rebalance () {
   echo
   for v in ${UNBALANCED[@]}; do
     amount=`reb -l --show-only $v | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
-    echo $amount | grep -q "-"
-    if [[ $? -eq 0 ]]; then
+    if [[  `bc -l <<< "$amount < 0"` -eq 1 ]]; then
       reb -f $v --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
-    elif [[ $amount -ne "0" ]]; then
+    elif [[ `bc -l <<< "$amount > 0"` -eq 1 ]]; then
       reb -t $v --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
     fi
   done
