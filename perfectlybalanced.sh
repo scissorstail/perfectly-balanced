@@ -7,7 +7,7 @@
 # This script tries to get your channels perfectly balanced by using `rebalance.py`
 # See https://github.com/C-Otto/rebalance-lnd for more info
 
-VERSION="0.0.6"
+VERSION="0.0.7"
 
 FILENAME=$0
 
