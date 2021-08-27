@@ -204,7 +204,7 @@ for i in "$@"; do
     echo -e "list:\n\tShows a list of all channels in compacted mode using 'rebalance.py -c -l'"
     echo -e "\tfor example to: '$FILENAME --tolerance=0.99 list'\n"
     echo -e "rebalance:\n\tTries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.95"
-    echo -e "\tfor example to: '$FILENAME --max-fee=10 --tolerance=0.95 rebalance'\n"
+    echo -e "\tfor example to: '$FILENAME --max-fee=10 --tolerance=0.98 rebalance'\n"
     exit
     ;;
   -i=*|--ignore=*)
