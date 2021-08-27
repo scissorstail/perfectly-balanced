@@ -210,7 +210,7 @@ for i in "$@"; do
     ;;
   -i=*|--ignore=*)
     if ! [[ "${i#*=}" =~ ^[0-9]{18}$ ]]; then
-      echo -e "Error: the IGNORE list should be channels id only, get them with 'list'\n"
+      echo -e "Error: the IGNORE list should be channels id only, get them with '$FILENAME list'\n"
       exit 1
     fi
     IGNORE+=("${i#*=}")
