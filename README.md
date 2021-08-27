@@ -31,8 +31,13 @@ Optional:
         -h, --help
                 Shows this help
 
+        -i=CHANNEL_ID, --ignore=CHANNEL_ID
+                Ignores a specific channel id useful only if passed before 'list' or 'rebalance'
+                It can be used many times and should match a number of 18 digits
+
         -m=MAX_FEE, --max-fee=MAX_FEE
-                (Default: 100) Changes max fees useful only if passed before 'list' or 'rebalance'
+                (Default: 50) Changes max fees useful only if passed before 'list' or 'rebalance'
+
         -t=TOLERANCE, --tolerance=TOLERANCE
                 (Default: 0.98) Changes tolerance useful only if passed before 'rebalance'
 
@@ -41,15 +46,11 @@ list:
         for example to: './perfectlybalanced.sh --tolerance=0.99 list'
 
 rebalance:
-        Tries to rebalance unbalanced channels with default max fee of 100 and tolerance 0.98
+        Tries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.98
         for example to: './perfectlybalanced.sh --max-fee=10 --tolerance=0.95 rebalance'
 ```
 
 ## Examples
-
-List all channels within default tolerance 0.98:
-
-`./perfectlybalanced.sh list`
 
 List all channels within tolerance 0.92:
 
@@ -58,6 +59,10 @@ List all channels within tolerance 0.92:
 or
 
 `./perfectlybalanced.sh -t=0.92 list`
+
+Default list within tolerance 0.98:
+
+`./perfectlybalanced.sh list`
 
 Unbalanced channels being rebalanced max fee 10 sats and tolerance 0.97:
 
@@ -68,11 +73,15 @@ or
 `./perfectlybalanced.sh -m=10 -t=0.97 rebalance`
 
 
-Unbalanced channels being rebalanced with default max fee 100 sats and tolerance 0.98:
+Default max fee 50 sats and tolerance 0.98:
 
 `./perfectlybalanced.sh rebalance`
 
-![image](https://user-images.githubusercontent.com/88283485/131094871-fa82657a-0f80-419c-aee1-838dea6dbcee.png)
+Rebalance with max fee 10 sats and tolerance 0.98, ignoring channel id '761128128258703361':
+
+`./perfectlybalanced.sh --ignore=761128128258703361 -t=0.98 -m=10 rebalance`
+
+![image](https://user-images.githubusercontent.com/88283485/131143050-ed227d2c-40ae-478a-91b1-0c4f95743bb1.png)
 
 ## Contribute
 
