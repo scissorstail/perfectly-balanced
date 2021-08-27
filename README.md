@@ -47,7 +47,7 @@ list:
 
 rebalance:
         Tries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.95
-        for example to: './perfectlybalanced.sh --max-fee=10 --tolerance=0.95 rebalance'
+        for example to: './perfectlybalanced.sh --max-fee=10 --tolerance=0.98 rebalance'
 ```
 
 ## Examples
