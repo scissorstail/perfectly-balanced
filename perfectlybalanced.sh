@@ -143,7 +143,7 @@ list () {
 }
 
 rebalance () {
-  echo -e "Trying to rebalance these unbalanced channels:\n"
+  echo -e "Trying to rebalance these unbalanced channels, max fee $MAX_FEE sats:\n"
   export GREP_COLORS='ms=01;31'
   headers
   for u in ${UNBALANCED[@]}; do
