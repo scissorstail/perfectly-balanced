@@ -36,7 +36,7 @@ Optional:
                 It can be used many times and should match a number of 18 digits
 
         -m=MAX_FEE, --max-fee=MAX_FEE
-                (Default: 100) Changes max fees useful only if passed before 'list' or 'rebalance'
+                (Default: 50) Changes max fees useful only if passed before 'list' or 'rebalance'
 
         -t=TOLERANCE, --tolerance=TOLERANCE
                 (Default: 0.98) Changes tolerance useful only if passed before 'rebalance'
@@ -46,7 +46,7 @@ list:
         for example to: './perfectlybalanced.sh --tolerance=0.99 list'
 
 rebalance:
-        Tries to rebalance unbalanced channels with default max fee of 100 and tolerance 0.98
+        Tries to rebalance unbalanced channels with default max fee of 50 and tolerance 0.98
         for example to: './perfectlybalanced.sh --max-fee=10 --tolerance=0.95 rebalance'
 ```
 
@@ -73,7 +73,7 @@ or
 `./perfectlybalanced.sh -m=10 -t=0.97 rebalance`
 
 
-Default max fee 100 sats and tolerance 0.98:
+Default max fee 50 sats and tolerance 0.98:
 
 `./perfectlybalanced.sh rebalance`
 
