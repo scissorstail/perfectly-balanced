@@ -61,7 +61,7 @@ setup() {
   if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
     echo -e "\nDownloading 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd...\n"
     wget -qO /tmp/rebalance-lnd.zip "https://github.com/C-Otto/rebalance-lnd/archive/$REBALANCE_LND_VERSION.zip"
-    unzip /tmp/rebalance-lnd.zip -d /tmp
+    unzip -q /tmp/rebalance-lnd.zip -d /tmp
   fi
 
   error=0
