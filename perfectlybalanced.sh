@@ -59,7 +59,7 @@ PERFECT
 setup() {
 
   if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
-    echo -e "\nDownloading 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd...\n"
+    echo -e "Downloading 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd...\n"
     wget -qO /tmp/rebalance-lnd.zip "https://github.com/C-Otto/rebalance-lnd/archive/$REBALANCE_LND_VERSION.zip"
     unzip -q /tmp/rebalance-lnd.zip -d /tmp
   fi
@@ -67,17 +67,17 @@ setup() {
   error=0
 
   if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
-    echo -e "\nError: 'rebalance-lnd.py' is not available!\n"
+    echo -e "Error: 'rebalance-lnd.py' is not available!\n"
     error=1
   fi
 
   if ! [ -x "$(command -v python3)" ]; then
-    echo -e "\nError: 'python3' is not available!\n"
+    echo -e "Error: 'python3' is not available!\n"
     error=1
   fi
 
   if ! [ -x "$(command -v bc)" ]; then
-    echo -e "\nError: 'bc' is not available!\n"
+    echo -e "Error: 'bc' is not available!\n"
     error=1
   fi
 
