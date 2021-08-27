@@ -52,10 +52,6 @@ rebalance:
 
 ## Examples
 
-List all channels within default tolerance 0.98:
-
-`./perfectlybalanced.sh list`
-
 List all channels within tolerance 0.92:
 
 `./perfectlybalanced.sh --tolerance=0.92 list`
@@ -63,6 +59,10 @@ List all channels within tolerance 0.92:
 or
 
 `./perfectlybalanced.sh -t=0.92 list`
+
+Default list within tolerance 0.98:
+
+`./perfectlybalanced.sh list`
 
 Unbalanced channels being rebalanced max fee 10 sats and tolerance 0.97:
 
@@ -73,16 +73,15 @@ or
 `./perfectlybalanced.sh -m=10 -t=0.97 rebalance`
 
 
-Unbalanced channels being rebalanced with default max fee 100 sats and tolerance 0.98:
+Default max fee 100 sats and tolerance 0.98:
 
 `./perfectlybalanced.sh rebalance`
 
-Unbalanced channels being rebalanced with max fee 10 sats and tolerance 0.98, ignoring channel id '761128128258703361':
+Rebalance with max fee 10 sats and tolerance 0.98, ignoring channel id '761128128258703361':
 
 `./perfectlybalanced.sh --ignore=761128128258703361 -t=0.98 -m=10 rebalance`
 
 ![image](https://user-images.githubusercontent.com/88283485/131143050-ed227d2c-40ae-478a-91b1-0c4f95743bb1.png)
-
 
 ## Contribute
 
