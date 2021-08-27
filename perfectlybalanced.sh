@@ -4,130 +4,222 @@
 # By Cuaritas 2021
 # MIT License
 
-# Your settings vars:
+VERSION="0.0.5"
 
-REBALANCE_LND_FILEPATH=/home/umbrel/Downloads/rebalance-lnd/rebalance.py
-LND_DIR=/mnt/umbrel/Umbrel/lnd/
-MAX_FEE=100
-TOLERANCE=0.98
-
-# Your channels to keep perfectly balanced, get them with `rebalance.py -l -c`
+# Your channels are going to be perfectly balanced by using `rebalance.py -l -c`
 # See https://github.com/C-Otto/rebalance-lnd for more info
 
-declare -a channels=(
-  766511337228992513 # SpaintoLATAM
-  766880773108203521 # renoblitz
-  766283738386399232 # 02a446876eafbbdaa96e
-  765011603400949760 # Gondolin
-  765016001414299649 # rbvdr21
-  766262847645417473 # 031b0b9df8e34e53de02
-  766874176095649792 # LibertyBull
-  766898365405003777 # Plaidfunds
-  761111635631734784 # 02c603d30ea3711144d4
-  766534426924810241 # Cuerna
-)
+# ATTENTION: Script logic, stop editing right here, it gets reckless!!!
 
-# Liquidity channels also included in `reb -l -c` but you use these channels to pump and dump sats
+# Default values
 
-LIQUIDITY_PUMP=766237558887612417 # LNBIG.com [lnd-03]
-LIQUIDITY_DUMP=761128128258703361 # LNBIG.com [lnd-13]
+FILENAME=$0
 
-# Script logic, stop editing right here, it gets reckless!!! hehehe
+MAX_FEE=100 # Sats
 
+TOLERANCE=0.98 # 98%
+
+LND_DIR=$HOME/.lnd/
+
+REBALANCE_LND_VERSION="484c172e760d14209b52fdc8fcfd2c5526e05a7c"
+
+REBALANCE_LND_FILEPATH="/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py"
+
+W='\e[0m' # White
+P='\e[1;35m' # Purple Thanos
+R='\e[1;31m' # Red
+
+echo -e "$(
 cat << PERFECT
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▓▓▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓
-▒▒▒▒▒▒▒Perfectly balanced, as all things should be...▒▒▒▒░░░▒▓▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓████▓
-▒▒▒▒▒▒▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░▒▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓█████▓▓▓▓▓▓▓▓▓▓█▓███▓
-▒▒▒▒▒▒▒▒▒▒▓▒▒░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░▒▓▓██▓▒▓▓▓▓▓▓▓▓▓▓▓███▓██▓▓▓▓▓▓▓▓▓▓█▓███▓
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒▒▒▒▒▒▒▒░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░▒▓▓▓▓██▓▒▓▓▓▓▓▓▓▓▓█████▓██▓▓▓▓▓▓▓▓▓▓█▓██▓▓
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒░░░░░░░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒▓▓▓▓▓▓███▒▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓█▓██▓▓
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░▒▒▒▒▒▒▒▒▒▒░░░░░░░▒▒▓▓███▓▒▓▓▓▓▓▓▓▓▓▓███████▓▓▓▓▓▓▓▓▓▓██████▓
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒░░░░░░▒▒▒▒▓▓███▓▓▓▓▓▓▓▓▓▓▓▓███████▓▓▓▓▓▓▓▓▓▓███████
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▒▓▓█▓▓▓▓▓▓▒▒▒░░▒▒▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓██████▓▓▓▓▓▓▓▓▓▓▓███████
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▓▓▓▓▓▓▓███▓████▓▓█▓▓▓▓▒▓▓████▓▓▓███▓█▓▓█████████▓▓▓▓▓▓▓▓▓▓███████▓
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▒▒▓▒▓▓▓▓▒▒▒▓███▓███████████▓▓▓▓▓▓▓▓▓██████▓▓▓
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▒▓▓▓▒▓▓▒▒░▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▓▓█▓▓▓▓▓▓▓▓▓▓███████
-▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓████████████
-▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▒
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▒▒▒▒▓▓▓█████▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓█▓▒▓▓▓███▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓█▓█▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}░░▒▓▓▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓${W}
+▒▒▒▒▒▒▒Perfectly balanced, as all things should be...▒▒▒▒${P}░░░▒▓▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓████▓${W}
+▒▒▒▒▒▒▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}░░░░░▒▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓█████▓▓▓▓▓▓▓▓▓▓█▓███▓${W}
+▒▒▒▒▒▒▒▒▒▒▓▒▒░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}░░░░░░▒▓▓██▓▒▓▓▓▓▓▓▓▓▓▓▓███▓██▓▓▓▓▓▓▓▓▓▓█▓███▓${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒▒▒▒▒▒▒▒░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}░░░░░▒▓▓▓▓██▓▒▓▓▓▓▓▓▓▓▓█████▓██▓▓▓▓▓▓▓▓▓▓█▓██▓▓${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒░░░░░░░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}░░▒▒▓▓▓▓▓▓███▒▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓█▓██▓▓${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░▒▒▒▒▒▒▒▒▒▒░${P}░░░░░░▒▒▓▓███▓▒▓▓▓▓▓▓▓▓▓▓███████▓▓▓▓▓▓▓▓▓▓██████▓${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒░${P}░░░░░▒▒▒▒▓▓███▓▓▓▓▓▓▓▓▓▓▓▓███████▓▓▓▓▓▓▓▓▓▓███████${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▒▓▓█▓▓▓▓▓▓▒▒▒░░▒${P}▒▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓██████▓▓▓▓▓▓▓▓▓▓▓███████${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▓▓▓▓▓▓▓${R}███▓████▓▓█▓${W}▓▓▓▒▓${P}▓████▓▓▓███▓█▓▓█████████▓▓▓▓▓▓▓▓▓▓███████▓${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓${R}▓▓▓▓████████▓▓▒▒${W}▓▒▓▓▓▓▒▒${P}▒▓███▓███████████▓▓▓▓▓▓▓▓▓██████▓▓▓${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓${R}▓▓▓▓▓▓▓▓▒▒▒▓▒▓▓${W}▓▒▓▓▒▒░▒▒▒▒▒${P}▓▓▓▓▓▓▓▓▒▒▒▓▓█▓▓▓▓▓▓▓▓▓▓███████${W}
+▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${R}▓▓▓▓▓▓▓▓▓▒▓▓▓▓${W}▓▓▓▓▓▓▓▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}▓▓▓▓▓████████████${W}
+▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}▓▓▓▓▓▓▓▓▓▓${W}▓▓▓▓▓▓▓▓▓▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}▓▓▓▓▓▓▓▓▓▒${W}
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}▓▓▓▓▓▓▓▓▓▓▓▓${W}▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}▓▓▓▓▓▒▒▓▓▓▓▓▓${W}▒▓▓▓▓▓▓▓▓▒▒▒▒▓▓▓█████▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}▒▓▓▓▓▓▓▓▓▓▓${W}▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓█▓▒▓▓▓███▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒${P}▓▓▓▓▓▓▓▓${W}▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓█▓█▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒
 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓██▓▓▒▒▒▒▒▒▒▒▒
+${W}
 PERFECT
+)"
 
+setup() {
+
+  if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
+    echo -e "Downloading 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd...\n"
+    wget -qO /tmp/rebalance-lnd.zip "https://github.com/C-Otto/rebalance-lnd/archive/$REBALANCE_LND_VERSION.zip"
+    unzip -q /tmp/rebalance-lnd.zip -d /tmp
+  fi
+
+  error=0
+
+  if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
+    echo -e "Error: 'rebalance-lnd.py' is not available!\n"
+    error=1
+  fi
+
+  if ! [ -x "$(command -v python3)" ]; then
+    echo -e "Error: 'python3' is not available!\n"
+    error=1
+  fi
+
+  if ! [ -x "$(command -v bc)" ]; then
+    echo -e "Error: 'bc' is not available!\n"
+    error=1
+  fi
+
+  if [ $error -eq 1 ]; then
+    exit 1
+  fi
+}
+
+setup
 
 reb () {
   python3 $REBALANCE_LND_FILEPATH --lnddir=$LND_DIR $@
 }
 
+channels_file=`mktemp`
+
+cat << CHAN > $channels_file
+`reb -l -c`
+CHAN
+
+channels() {
+  cat $channels_file
+}
+
+IDS=(`channels | awk '{ printf "%s\n", $1 }'`)
+
 UNBALANCED=()
+
+headers() {
+  echo -e "${P}Channel ID         ${W}| ${P}Oubound Cap${W} | ${P}Inbound Cap${W} | ${P}Channel Alias${W}"
+}
+
 list () {
-  echo -e "\nChecking these channels, red are outside tolerance $TOLERANCE and green are ok:\n"
+  echo -e "\nChecking these channels:\n"
 
   inbound=0
   outbound=0
 
-  for c in ${channels[@]}; do
-    temp=`reb -l -c | grep $c`
+  headers
+  for c in ${IDS[@]}; do
+    temp=`channels | grep $c`
     inbound=`echo $temp | awk '{ printf $3 }' | sed 's/,//g'`
     outbound=`echo $temp | awk '{ printf $5 }' | sed 's/,//g'`
-    if [[ `bc -l <<< "$inbound/$outbound >= $TOLERANCE && $outbound/$inbound >= $TOLERANCE"` -eq 1 ]]; then
+    if [[ `bc -l <<< "$inbound == 0 || $outbound == 0"` -eq 1 ]]; then
+     export GREP_COLORS='ms=01;31'
+     UNBALANCED+=("$c")
+    elif [[ `bc -l <<< "$inbound/$outbound >= $TOLERANCE && $outbound/$inbound >= $TOLERANCE"` -eq 1 ]]; then
      export GREP_COLORS='ms=01;32'
     else
      export GREP_COLORS='ms=01;31'
      UNBALANCED+=("$c")
     fi
-    reb -l -c | grep --color=always $c
+    channels | grep --color=always $c
   done
 
-  echo -e "\nLiquidity PUMP (uses outbound cap) and DUMP (uses inbound cap) to get other channels perfectly balanced:\n"
-  export GREP_COLORS='ms=01;34'
-  reb -l -c | grep --color=always $LIQUIDITY_PUMP
-  reb -l -c | grep --color=always $LIQUIDITY_DUMP
-}
-
-rebalance () {
   if [[ ${#UNBALANCED[@]} -eq 0 ]]; then
     echo -e "\nAll Channels are balanced according to tolerance levels $TOLERANCE\n"
     exit
   else
-    echo -e "\nTrying to rebalance these unbalanced channels:\n"
-    export GREP_COLORS='ms=01;31'
-    for u in ${UNBALANCED[@]}; do
-      reb -l -c | grep --color=always $u
-    done
+    echo -e "\nChannels in red are outside tolerance $TOLERANCE, green are ok\n"
   fi
-  echo
-  for u2 in ${UNBALANCED[@]}; do
-    amount=`reb -l --show-only $u2 | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
-    echo $amount | grep -q "-"
-    if [[ $? -eq 0 ]]; then
-      reb -f $u2 -t $LIQUIDITY_DUMP --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
-    elif [[ $amount -ne "0" ]]; then
-      reb -f $LIQUIDITY_PUMP -t $u2 --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
-    fi
-  done
 }
 
-VERSION="0.0.4"
+rebalance () {
+  echo -e "Trying to rebalance these unbalanced channels:\n"
+  export GREP_COLORS='ms=01;31'
+  headers
+  for u in ${UNBALANCED[@]}; do
+    channels | grep --color=always $u
+  done
+  echo
+  for v in ${UNBALANCED[@]}; do
+    amount=`reb -l --show-only $v | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
+    echo $amount | grep -q "-"
+    if [[ $? -eq 0 ]]; then
+      reb -f $v --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
+    elif [[ $amount -ne "0" ]]; then
+      reb -t $v --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
+    fi
+  done
+  echo -e "\nRebalance completed!\nPlease use '$FILENAME list' to see your perfectly rebalanced list :)\n"
+}
 
-case "$1" in
---version)
-  echo "$0 v${VERSION}"
-  ;;
---help)
-  echo "Usage: $0 {--version|--help|list|rebalance}"
-  ;;
-list)
-  list
-  ;;
-rebalance)
-  list
-  rebalance
-  ;;
-*)
-  echo "Try --help"
-  ;;
-esac
+
+for i in "$@"; do
+  case "$i" in
+  -m=*|--max-fee=*)
+    MAX_FEE="${i#*=}"
+    if ! [[ "$MAX_FEE" =~ ^[0-9]+$ ]]; then
+      echo -e "Error: the MAX_FEE value should be a positive number\n"
+      exit 1
+    fi
+    if [[ `bc -l <<< "$MAX_FEE <= 0"` -eq 1 ]]; then
+      echo -e "Error: the MAX_FEE value should be greater than 0\n"
+      exit 1
+    fi
+    shift
+    ;;
+  -t=*|--tolerance=*)
+    TOLERANCE="${i#*=}"
+    if ! [[ "$TOLERANCE" =~ ^0.[0-9]+$ ]]; then
+      echo -e "Error: the TOLERANCE value should be greater than 0 and less than 1, for example 0.97\n"
+      exit 1
+    fi
+    if [[ `bc -l <<< "$TOLERANCE <= 0 || $TOLERANCE >= 1"` -eq 1 ]]; then
+      echo -e "Error: the TOLERANCE value should be greater than 0 and less tnan 1\n"
+      exit 1
+    fi
+    shift
+    ;;
+  -v|--version)
+    echo -e "$FILENAME v${VERSION}\n"
+    exit
+    ;;
+  -h|--help)
+    echo -e "Usage: $FILENAME {-v|-h|-m=VALUE|-t=VALUE|list|rebalance}\n"
+    echo -e "Optional:"
+    echo -e "\t-v, --version\n\t\tShows the version for this script\n"
+    echo -e "\t-h, --help\n\t\tShows this help\n"
+    echo -e "\t-m=MAX_FEE, --max-fee=MAX_FEE\n\t\t(Default: 100) Changes max fees useful only if passed before 'list' or 'rebalance'\n"
+    echo -e "\t-t=TOLERANCE, --tolerance=TOLERANCE\n\t\t(Default: 0.98) Changes tolerance useful only if passed before 'rebalance'\n"
+    echo -e "list:\n\tShows a list of all channels in compacted mode using 'rebalance.py -c -l'"
+    echo -e "\tfor example to: '$FILENAME --tolerance=0.99 list'\n"
+    echo -e "rebalance:\n\tTries to rebalance unbalanced channels with default max fee of 100 and tolerance 0.98"
+    echo -e "\tfor example to: '$FILENAME --max-fee=10 --tolerance=0.95 rebalance'\n"
+    exit
+    ;;
+  list)
+    list
+    exit
+    ;;
+  rebalance)
+    list
+    rebalance
+    exit
+    ;;
+  esac
+done
+
+if [[ $# -ne 0 ]]; then
+  echo "Unknown parameter passed: $@"
+fi
+
+echo -e "Try --help or -h\n"
+exit 1
