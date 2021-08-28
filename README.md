@@ -3,7 +3,7 @@
 ![image](https://user-images.githubusercontent.com/88283485/130841235-3e8901c5-3477-4107-b15f-f284a06a9665.png)
 
 Script to make your LND node pefectly balanced as all things should be.
-Inspired by [Igniter](https://github.com/RooSoft/igniter), [Rebalance-LND](https://github.com/C-Otto/rebalance-lnd) and [Balance Of Satoshi](https://github.com/alexbosworth/balanceofsatoshis)
+Inspired by [Igniter](https://github.com/RooSoft/igniter), [rebalance-lnd](https://github.com/C-Otto/rebalance-lnd) and [Balance Of Satoshi](https://github.com/alexbosworth/balanceofsatoshis)
 
 ## Requirements:
 
@@ -14,8 +14,15 @@ Almost all included by default in most linux distros:
 - `bc`
 - `wget`
 - `unzip`
+- `jq`
 
 Make sure your LND path is located or linked to `$HOME/.lnd`
+
+⚠️ Also you need to install rebalance-lnd requirements, more info [here](https://github.com/C-Otto/rebalance-lnd/tree/484c172e760d14209b52fdc8fcfd2c5526e05a7c#python-dependencies)
+
+```
+pip install -Iv googleapis-common-protos==1.53.0 grpcio==1.39.0 protobuf==3.17.3 six==1.16.0 yachalk==0.1.4
+```
 
 ## Usage
 
