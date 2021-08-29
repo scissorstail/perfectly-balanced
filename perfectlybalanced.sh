@@ -24,6 +24,8 @@ REBALANCE_LND_FILEPATH="/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py"
 W='\e[0m' # White
 P='\e[1;35m' # Purple Thanos
 R='\e[1;31m' # Red
+G='\e[1;32m' # Green
+Bo="\033[1m" # Bold
 
 echo -e "$(
 cat << PERFECT
@@ -113,35 +115,73 @@ UNBALANCED=()
 IGNORE=()
 
 headers() {
-  echo -e "${P}Channel ID         ${W}| ${P}Oubound Cap${W} | ${P}Inbound Cap${W} | ${P}Channel Alias${W}"
+  echo -e "${Bo}Balance Graph  | Channel ID         | Oubound Cap | Inbound Cap | Channel Alias${W}"
+}
+
+graph() {
+  temp=`channels | grep $c`
+  inbound=`echo $temp | awk '{ printf $3 }' | sed 's/,//g'`
+  outbound=`echo $temp | awk '{ printf $5 }' | sed 's/,//g'`
+  if [[ `bc -l <<< "$inbound == 0 || $outbound == 0"` -eq 1 ]]; then
+    export GREP_COLORS='ms=01;31'
+    UNBALANCED+=("$c")
+  elif [[ `bc -l <<< "$inbound/$outbound >= $TOLERANCE && $outbound/$inbound >= $TOLERANCE"` -eq 1 ]]; then
+    export GREP_COLORS='ms=01;32'
+  else
+    export GREP_COLORS='ms=01;31'
+    UNBALANCED+=("$c")
+  fi
+  total=`bc -l <<< "$inbound + $outbound"`
+  inb=`bc -l <<< "x=($inbound*12/$total)+0.5;
+                  if (x < 1) {
+                    print 0
+                    x
+                  } else if (x > 11.5) {
+                    13
+                  } else {
+                    x
+                  }"`
+  out=`bc -l <<< "x=($outbound*12/$total)+0.5
+                  if (x < 1) {
+                    print 0
+                    x
+                  } else if (x > 11.5) {
+                    13
+                  } else {
+                    x
+                  }"`
+  for x in `seq 0 ${inb%.*}`; do
+    if [[ ${inb%.*} -eq 0 ]]; then
+      break
+    fi
+
+    printf "${P}▓"
+  done
+  for x in `seq 0 ${out%.*}`; do
+    if [[ ${out%.*} -eq 0 ]]; then
+      break
+    fi
+
+    printf "${G}▓"
+  done
+  printf "${W} | "
 }
 
 list () {
-  echo -e "\nChecking these channels:\n"
-
   for ig in ${IGNORE[@]}; do
     sed -i.bak "/$ig/d" $channels_file
   done
 
   IDS=(`channels | awk '{ printf "%s\n", $1 }'`)
+  
+  echo -e "\nChecking ${#IDS[@]} channels:\n"
 
   inbound=0
   outbound=0
 
   headers
   for c in ${IDS[@]}; do
-    temp=`channels | grep $c`
-    inbound=`echo $temp | awk '{ printf $3 }' | sed 's/,//g'`
-    outbound=`echo $temp | awk '{ printf $5 }' | sed 's/,//g'`
-    if [[ `bc -l <<< "$inbound == 0 || $outbound == 0"` -eq 1 ]]; then
-     export GREP_COLORS='ms=01;31'
-     UNBALANCED+=("$c")
-    elif [[ `bc -l <<< "$inbound/$outbound >= $TOLERANCE && $outbound/$inbound >= $TOLERANCE"` -eq 1 ]]; then
-     export GREP_COLORS='ms=01;32'
-    else
-     export GREP_COLORS='ms=01;31'
-     UNBALANCED+=("$c")
-    fi
+    graph
     channels | grep --color=always $c
   done
 
@@ -154,11 +194,12 @@ list () {
 }
 
 rebalance () {
-  echo -e "Trying to rebalance these unbalanced channels, max fee $MAX_FEE sats:\n"
+  echo -e "Trying to rebalance these ${#UNBALANCED[@]} unbalanced channels, max fee $MAX_FEE sats:\n"
   export GREP_COLORS='ms=01;31'
   headers
-  for u in ${UNBALANCED[@]}; do
-    channels | grep --color=always $u
+  for c in ${UNBALANCED[@]}; do
+    graph
+    channels | grep --color=always $c
   done
   echo
   for v in ${UNBALANCED[@]}; do
