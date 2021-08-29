@@ -15,7 +15,6 @@ Almost all included by default in most linux distros:
 - `bc`
 - `wget`
 - `unzip`
-- `jq`
 
 Make sure your LND path is located or linked to `$HOME/.lnd`
 
@@ -83,7 +82,7 @@ Rebalance with max fee 10 sats and tolerance 0.98, ignoring channel id '76112812
 
 `./perfectlybalanced.sh --ignore=761128128258703361 -t=0.98 -m=10 rebalance`
 
-![image](https://user-images.githubusercontent.com/88283485/131143050-ed227d2c-40ae-478a-91b1-0c4f95743bb1.png)
+![image](https://user-images.githubusercontent.com/88283485/131256805-edf995b9-3307-4e10-900c-e9d92a7908b1.png)
 
 ## Contribute
 
