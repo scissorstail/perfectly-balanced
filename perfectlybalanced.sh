@@ -141,15 +141,7 @@ graph() {
                   } else {
                     x
                   }"`
-  out=`bc -l <<< "x=($outbound*12/$total)+0.5
-                  if (x < 1) {
-                    print 0
-                    x
-                  } else if (x > 11.5) {
-                    13
-                  } else {
-                    x
-                  }"`
+  out=`bc -l <<< "13-$inb"`
   for x in `seq 0 ${inb%.*}`; do
     if [[ ${inb%.*} -eq 0 ]]; then
       break
