@@ -56,16 +56,17 @@ PERFECT
 
 setup() {
 
-  if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
+  error=0
+
+  if ! [ -f "$REBALANCE_LND_FILEPATH" ]; then
     echo -e "Downloading 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd\n"
     wget -qO /tmp/rebalance-lnd.zip "https://github.com/C-Otto/rebalance-lnd/archive/$REBALANCE_LND_VERSION.zip"
     if [[ $? -ne 0 ]]; then
       echo -e "Error: unable to download 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd\n"
+      error=1
     fi
     unzip -q /tmp/rebalance-lnd.zip -d /tmp &> /dev/null
   fi
-
-  error=0
 
   if ! [ -x "$(command -v python3)" ]; then
     echo -e "Error: 'python3' is not available!\n"
@@ -165,7 +166,7 @@ list () {
   done
 
   IDS=(`channels | awk '{ printf "%s\n", $1 }'`)
-  
+
   echo -e "\nChecking ${#IDS[@]} channels:\n"
 
   inbound=0
