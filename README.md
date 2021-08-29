@@ -11,18 +11,13 @@ Almost all included by default in most linux distros:
 
 - `bash`
 - `python3`
+- `pip`
 - `bc`
 - `wget`
 - `unzip`
 - `jq`
 
 Make sure your LND path is located or linked to `$HOME/.lnd`
-
-⚠️ Also you need to install rebalance-lnd requirements, more info [here](https://github.com/C-Otto/rebalance-lnd/tree/484c172e760d14209b52fdc8fcfd2c5526e05a7c#python-dependencies)
-
-```
-pip install -Iv googleapis-common-protos==1.53.0 grpcio==1.39.0 protobuf==3.17.3 six==1.16.0 yachalk==0.1.4
-```
 
 ## Usage
 
