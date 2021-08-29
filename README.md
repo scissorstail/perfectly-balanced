@@ -86,6 +86,6 @@ Rebalance with max fee 10 sats and tolerance 0.98, ignoring channel id '76112812
 
 ## Contribute
 
-Feel free to collaborate with code or donate a few Satoshi using your LND Lightning node ⚡ 😄
+Feel free to collaborate with code or donate a few Satoshi using your LND node ⚡ 😄
 
 `lncli sendpayment --keysend 03e7299ced214b19b87ed87979462d9aee3ec07a42fe6e2211854bfa4cb32b0bb8 100 # sats`
