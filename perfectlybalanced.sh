@@ -7,7 +7,7 @@
 # This script tries to get your channels perfectly balanced by using `rebalance.py`
 # See https://github.com/C-Otto/rebalance-lnd for more info
 
-VERSION="0.0.7"
+VERSION="0.0.8"
 
 FILENAME=$0
 
@@ -55,20 +55,31 @@ PERFECT
 setup() {
 
   if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
-    echo -e "Downloading 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd...\n"
+    echo -e "Downloading 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd\n"
     wget -qO /tmp/rebalance-lnd.zip "https://github.com/C-Otto/rebalance-lnd/archive/$REBALANCE_LND_VERSION.zip"
-    unzip -q /tmp/rebalance-lnd.zip -d /tmp
+    if [[ $? -ne 0 ]]; then
+      echo -e "Error: unable to download 'rebalance-lnd' from https://github.com/C-Otto/rebalance-lnd\n"
+    fi
+    unzip -q /tmp/rebalance-lnd.zip -d /tmp &> /dev/null
   fi
 
   error=0
 
-  if ! [ -f "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py" ]; then
+  if ! [ -x "$(command -v python3)" ]; then
+    echo -e "Error: 'python3' is not available!\n"
+    error=1
+  fi
+
+  if ! [ -f "$REBALANCE_LND_FILEPATH" ]; then
     echo -e "Error: 'rebalance-lnd.py' is not available!\n"
     error=1
   fi
 
-  if ! [ -x "$(command -v python3)" ]; then
-    echo -e "Error: 'python3' is not available!\n"
+  python3 $REBALANCE_LND_FILEPATH -h &> /dev/null
+  if [[ $? -ne 0 ]]; then
+    echo -e "Error: 'rebalance-lnd.py' dependencies are not available!"
+    echo -e "\tPlease install them using 'pip install -r requirements.txt'\n"
+    cp "/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/requirements.txt" . &> /dev/null
     error=1
   fi
 
