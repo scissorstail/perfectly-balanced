@@ -7,7 +7,7 @@
 # This script tries to get your channels perfectly balanced by using `rebalance.py`
 # See https://github.com/C-Otto/rebalance-lnd for more info
 
-VERSION="0.0.8"
+VERSION="0.0.9"
 
 FILENAME=$0
 
@@ -15,9 +15,11 @@ MAX_FEE=50 # Sats
 
 TOLERANCE=0.95 # 95%
 
+PARTS=2 # Split balance in 2 PARTS by default
+
 LND_DIR=$HOME/.lnd/
 
-REBALANCE_LND_VERSION="484c172e760d14209b52fdc8fcfd2c5526e05a7c"
+REBALANCE_LND_VERSION="v2.1"
 
 REBALANCE_LND_FILEPATH="/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py"
 
@@ -197,11 +199,15 @@ rebalance () {
   echo
   for v in ${UNBALANCED[@]}; do
     amount=`reb -l --show-only $v | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
-    if [[  `bc -l <<< "$amount < 0"` -eq 1 ]]; then
-      reb -f $v --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
-    elif [[ `bc -l <<< "$amount > 0"` -eq 1 ]]; then
-      reb -t $v --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
-    fi
+    amount=`bc <<< "$amount/$PARTS"`
+    MAX_FEE=`bc <<< "$MAX_FEE/$PARTS"`
+    for c in `seq 1 $PARTS`; do
+      if [[  `bc -l <<< "$amount < 0"` -eq 1 ]]; then
+        reb -f $v --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
+      elif [[ `bc -l <<< "$amount > 0"` -eq 1 ]]; then
+        reb -t $v --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
+      fi
+    done
   done
   echo -e "\nRebalance completed!\nPlease use '$FILENAME list' to see your perfectly rebalanced list :)\n"
 }
@@ -258,6 +264,14 @@ for i in "$@"; do
       exit 1
     fi
     IGNORE+=("${i#*=}")
+    shift
+    ;;
+  -p=*|--parts=*)
+    PARTS=${i#*=}
+    if ! [[ "$PARTS" =~ ^[1-9]$ ]]; then
+      echo -e "Error: the PARTS value should be greater than 0 and less than 10\n"
+      exit 1
+    fi
     shift
     ;;
   list)
