@@ -7,7 +7,7 @@
 # This script tries to get your channels perfectly balanced by using `rebalance.py`
 # See https://github.com/C-Otto/rebalance-lnd for more info
 
-VERSION="0.0.8"
+VERSION="0.0.9"
 
 FILENAME=$0
 
@@ -15,11 +15,11 @@ MAX_FEE=50 # Sats
 
 TOLERANCE=0.95 # 95%
 
-LND_DIR=$HOME/.lnd/
+LND_DIR="${LND_DIR:-$HOME/.lnd/}"
 
 REBALANCE_LND_VERSION="484c172e760d14209b52fdc8fcfd2c5526e05a7c"
 
-REBALANCE_LND_FILEPATH="/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py"
+REBALANCE_LND_FILEPATH="${REBALANCE_LND_FILEPATH:-/tmp/rebalance-lnd-$REBALANCE_LND_VERSION/rebalance.py}"
 
 W='\e[0m' # White
 P='\e[1;35m' # Purple Thanos
