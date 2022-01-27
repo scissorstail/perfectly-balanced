@@ -7,7 +7,7 @@
 # This script tries to get your channels perfectly balanced by using `rebalance.py`
 # See https://github.com/C-Otto/rebalance-lnd for more info
 
-VERSION="0.0.9"
+VERSION="0.0.10"
 
 FILENAME=$0
 
@@ -16,6 +16,8 @@ MAX_FEE=50 # Sats
 TOLERANCE=0.95 # 95%
 
 LND_DIR="${LND_DIR:-$HOME/.lnd/}"
+LND_IP="${LND_IP:-localhost}"
+LND_GRPC_PORT="${LND_GRPC_PORT:-10009}"
 
 REBALANCE_LND_VERSION="484c172e760d14209b52fdc8fcfd2c5526e05a7c"
 
@@ -99,7 +101,7 @@ setup() {
 setup
 
 reb () {
-  python3 $REBALANCE_LND_FILEPATH --lnddir=$LND_DIR $@
+  python3 $REBALANCE_LND_FILEPATH --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=$LND_DIR $@
 }
 
 channels_file=`mktemp`
