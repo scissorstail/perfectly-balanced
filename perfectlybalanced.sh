@@ -206,19 +206,18 @@ rebalance () {
   fi
   for v in ${UNBALANCED[@]}; do
     amount=`reb -l --show-only $v | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
-    if [[ `bc -l <<< "${amount#-} < 10000"` -eq 1 ]]; then
+    if [[ amount -eq 0 ]] || [[ `bc -l <<< "${amount#-} < 10000"` -eq 1 ]]; then
       echo -e "\nBalancing Channel ID $v with amount $amount skip\n"
       continue
+    else
+      echo -e "\nBalancing Channel ID $v with amount $amount in $PARTS parts spliting the $MAX_FEE Sats max fee\n"
     fi
-    echo -e "\nBalancing Channel ID $v with amount $amount in $PARTS parts spliting the $MAX_FEE Sats max fee\n"
     amount=`bc <<< "$amount/$PARTS"`
     for c in `seq 1 $PARTS`; do
       if [[ `bc -l <<< "$amount < 0"` -eq 1 ]]; then
-        echo -e "\nreb -f $v --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0\n"
-        reb -f $v --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
+        reb -f $v --amount ${amount#-} --fee-limit $MAX_FEE
       elif [[ `bc -l <<< "$amount > 0"` -eq 1 ]]; then
-        echo -e "\nreb -t $v --amount ${amount#-} --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0\n"
-        reb -t $v --amount $amount --reckless --min-local 0 --min-amount 0 --fee-limit $MAX_FEE --min-remote 0
+        reb -t $v --amount $amount --fee-limit $MAX_FEE
       fi
     done
   done
