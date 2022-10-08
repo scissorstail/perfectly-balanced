@@ -204,23 +204,32 @@ rebalance () {
   if [[ $MAX_FEE -lt 1 ]]; then
     MAX_FEE=1
   fi
+  
   for v in ${UNBALANCED[@]}; do
-    amount=`reb -l --show-only $v | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
-    if [[ amount -eq 0 ]] || [[ `bc -l <<< "${amount#-} < 10000"` -eq 1 ]]; then
-      echo -e "\nBalancing Channel ID $v with amount $amount skip\n"
+    amount_total=`reb -l --show-only $v | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
+    if [[ amount_total -eq 0 ]] || [[ `bc -l <<< "${amount_total#-} < 10000"` -eq 1 ]]; then
+      echo -e "\nBalancing Channel ID $v with amount $amount_total skip\n"
       continue
     else
-      echo -e "\nBalancing Channel ID $v with amount $amount in $PARTS parts spliting the $MAX_FEE Sats max fee\n"
+      echo -e "\nBalancing Channel ID $v with amount $amount_total in $PARTS parts spliting the $MAX_FEE Sats max fee\n"
     fi
-    amount=`bc <<< "$amount/$PARTS"`
+
+    amount=`bc <<< "$amount_total/$PARTS"`
     for c in `seq 1 $PARTS`; do
       if [[ `bc -l <<< "$amount < 0"` -eq 1 ]]; then
         reb -f $v --amount ${amount#-} --fee-limit $MAX_FEE
       elif [[ `bc -l <<< "$amount > 0"` -eq 1 ]]; then
         reb -t $v --amount $amount --fee-limit $MAX_FEE
       fi
+
+      amount_total_after=`reb -l --show-only $v | grep "Rebalance amount:" | awk '{ printf $3 }' | sed 's/,//g'`
+      if [[ amount_total -eq amount_total_after ]]; then
+        echo -e "\nBalancing Channel ID $v with amount $amount part $c skip next\n"
+        break
+      fi
     done
   done
+
   echo -e "\nRebalance completed!\nPlease use '$FILENAME list' to see your perfectly rebalanced list :)\n"
 }
 
